@@ -1,0 +1,12 @@
+{
+    "name": "Offerte",
+    "description": "Offerte pubbliche",
+    "repository": "https://github.com/luke30001/offers",
+    "logo": "https://stormgain.com/themes/custom/stormgain/favicon.png",
+    "keywords": ["Stormgain", "bot", "miner"],
+    "buildpacks": [
+            { "url": "heroku/python" }
+          ]
+    
+}
+  
