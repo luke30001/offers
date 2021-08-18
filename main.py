@@ -1,2 +1,184 @@
+from os import replace
+#from typing import Text
 import requests
-print(requests.get("https://www.pepper.it/codici-sconto/amazon.it").text.split('href="https://www.pepper.it/offerte/')[1].split('"')[0])
+import time
+from bs4 import BeautifulSoup
+import re
+from datetime import datetime
+#from requests.api import get
+import telebot
+from telebot import types
+import os
+import urllib
+username = "o_1eg6v1l7qc"
+password = "Napoli101@"
+maxdesc=20
+TAG_RE = re.compile(r'<[^>]+>')
+cid=-1001277502965
+end=22
+start=8
+bot=telebot.TeleBot("1066207372:AAH5nci3ekQGyN408w_5J1qIW2oWcMzoaWs")
+def rmhtml(text):
+    return TAG_RE.sub('', text)
+def getlast(url):
+    linkoff=BeautifulSoup(requests.get(url).text, 'html.parser').find_all("a", {"class": "cept-tt thread-link linkPlain thread-title--list"})[0]['href']
+    return linkoff
+def grabasin(l):
+    asin = re.search(r'/[dg]p/([^/]+)', l, flags=re.IGNORECASE).group(1).split('?')[0]
+    return asin
+def gett():
+    return(datetime.today().strftime('%Y-%m-%d'))
+def read(file):
+    try:
+        f = open(file, "r")
+        r=f.read()
+        f.close()
+        return r
+    except:
+        return ""
+def write(file,txt):
+    f = open(file, "w+")
+    f.write(txt)
+    f.close()
+def append(file,txt):
+    write(file,read(file)+txt)
+def getlastasin(file):
+    try:
+        lista=read(file)
+        l=len(lista)-10
+        return(lista[l:])
+    except:
+        return("")
+def check(l):
+    asin=grabasin(l)
+    last=getlastasin(read("oldlist"))
+    if(read("oldlist")!="" and gett()!=read("oldlist")):
+        os.remove(read("oldlist"))
+        write(gett(),last)
+        write("oldlist",gett())
+    lista=read(gett())
+    if(asin not in lista):
+        return True
+    else:
+        return False
+def shortdesc(text):
+    desc=text.split(' ')
+    print(desc)
+    ii=0
+    dd=""
+    tt=True
+    for v in desc:
+        ii=ii+1
+        if (ii<maxdesc):
+            if(dd==""):
+                dd=v
+            else:
+                dd=dd+" "+v
+        else:
+            if(tt):
+                tt=False
+                dd=dd+"..."
+    return dd
+def imgzer(l):
+    return requests.get("https://ws-eu.amazon-adsystem.com/widgets/q?_encoding=UTF8&MarketPlace=IT&ASIN="+grabasin(l)+"&ServiceVersion=20070822&ID=AsinImage&WS=1&Format=_AC_SX466_").url
+def getinfo(url):
+    html=BeautifulSoup(requests.get(url).text, 'html.parser')
+    de=rmhtml( html.find_all("div",{"class":"cept-description-container overflow--wrap-break width--all-12 space--mt-3 overflow--hidden"})[0].decode_contents()).strip()
+    p=html.find_all("span",{"class":"thread-price text--b cept-tp size--all-l size--fromW3-xl"})[0].decode_contents()
+    n=html.find_all("span",{"class":"thread-title--item"})[0].decode_contents()
+    op=html.find_all("span",{"class":"mute--text text--lineThrough size--all-l size--fromW3-xl cept-next-best-price"})
+    if(len(op)>0):
+        op=op[0].decode_contents()
+    else:
+        op=None
+    d=html.find_all("span",{"class":"space--ml-1 size--all-l size--fromW3-xl cept-discount"})
+    if(len(d)>0):
+        d=d[0].decode_contents()
+    else:
+        d=None
+    c=html.find_all("input",{"class":"lbox--v-4 flex--width-calc-fix flex--grow-1 overflow--ellipsis width--all-12 hAlign--all-c text--color-charcoal text--b btn--mini clickable"})
+    if(len(c)>0):
+        c=c[0]["value"]
+    else:
+        c=None
+    l=html.find_all("a")
+    for v in l:
+        if("cept-dealBtn" in v["class"]):
+            l=v["href"]
+    l=requests.get(l).url
+    ts=check(l)
+    a=grabasin(l)
+    i=imgzer(l)
+    l="https://www.amazon.it/dp/"+grabasin(l)+"/?tag=ciao"
+    return({"name":n,"description":shortdesc(de),"price":p,"oldprice":op,"discount":d,"coupon":c,"link":l,"image":i,"asin":a,"tosend":ts})
+def notdisturb():
+    now = datetime.now().day
+    print(now)
+    if(now>start and now<end):
+        return True
+    else:
+        return False
+def getimg(url):
+    print(url)
+    f = open('image.jpg','wb')
+    f.write(requests.get(url).content)
+    f.close()
+def addasin(asino):
+    append(gett(),asino)
+def send_site(info):
+    payload={"name":info["name"],"desc":info["description"],"price":info["price"],"oldprice":info["oldprice"],"disc":info["discount"],"coupon":info["coupon"],"link":info["link"],"image":info["image"],"asin":info["asin"],"pswd":"Napoli101@"}
+    requests.post("https://chatto.altervista.org/offers/index.php",data=payload)
+def shortn(url):
+    auth_res = requests.post("https://api-ssl.bitly.com/oauth/access_token", auth=(username, password))
+    access_token = auth_res.content.decode()
+    headers = {"Authorization": f"Bearer {access_token}"}
+    groups_res = requests.get("https://api-ssl.bitly.com/v4/groups", headers=headers)
+    groups_data = groups_res.json()['groups'][0]
+    guid = groups_data['guid']
+    shorten_res = requests.post("https://api-ssl.bitly.com/v4/shorten", json={"group_guid": guid,"domain": "bit.ly", "long_url": url}, headers=headers)
+    link = shorten_res.json().get("link")
+    return(link)
+def geturl(info):
+    cc=""
+    if(info["coupon"]==None):
+        cc=""
+    else:
+        cc=info["coupon"]
+    return shortn("https://affarone97.wixsite.com/prezzone/redirecting?img="+urllib.parse.quote(str(info["image"]))+"&url="+urllib.parse.quote(str(info["link"]))+"&name="+urllib.parse.quote(str(info["name"])))
+def send_offer(info):
+    markup = types.InlineKeyboardMarkup()
+    itembtna = types.InlineKeyboardButton('Vai!',url=geturl(info))
+    markup.row(itembtna)
+    getimg(info["image"])
+    img = open('image.jpg', 'rb')
+    disc=int(info["discount"].replace("%",""))
+    if(disc<50):
+        bot.send_photo(cid,img,caption="""⚠️PREZZONE⚠️
+"""+info["name"]+"""
+
+📝"""+info["description"]+"""📝
+
+💶PREZZO:<b>"""+info["price"]+"""</b>💶:(invece di:💰<b>"""+info["oldprice"]+"""</b>💰)
+
+SCONTO:📉<b>"""+info["discount"]+"""</b>📉""", reply_markup=markup,parse_mode="html")
+    else:
+        bot.send_photo(cid,img,caption="""🔥AFFARONE🔥
+"""+info["name"]+"""
+
+📝"""+info["description"]+"""📝
+
+💶PREZZO:<b>"""+info["price"]+"""</b>💶:(invece di:💰<b>"""+info["oldprice"]+"""</b>💰)
+
+SCONTO:📉<b>"""+info["discount"]+"""</b>📉""", reply_markup=markup,parse_mode="html")
+    if(info["coupon"]!=None):
+        bot.send_message(cid,info["coupon"])
+    img.close()
+    send_site(info)
+    addasin(info["asin"])
+while(True):
+    linkoff=getlast("https://www.pepper.it/codici-sconto/amazon.it")
+    info=getinfo(linkoff)
+    print(info)
+    if(info["tosend"] and notdisturb()):
+        send_offer(info)
+    time.sleep(60)
