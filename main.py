@@ -24,7 +24,7 @@ def getlast(url):
     linkoff=BeautifulSoup(requests.get(url).text, 'html.parser').find_all("a", {"class": "cept-tt thread-link linkPlain thread-title--list"})[0]['href']
     return linkoff
 def grabasin(l):
-    asin = re.search(r'/[dg]p/([^/]+)', l, flags=re.IGNORECASE).group(1).split('?')[0]
+    asin = re.search(r'(?:[/dp/]|$)([A-Z0-9]{10})', l, flags=re.IGNORECASE).group(1).split('?')[0]
     return asin
 def gett():
     return(datetime.today().strftime('%Y-%m-%d'))
