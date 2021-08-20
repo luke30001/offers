@@ -10,6 +10,7 @@ import telebot
 from telebot import types
 import os
 import urllib
+fid=-1001503051596
 username = "o_1eg6v1l7qc"
 password = "Napoli101@"
 maxdesc=20
@@ -21,7 +22,10 @@ bot=telebot.TeleBot("1066207372:AAH5nci3ekQGyN408w_5J1qIW2oWcMzoaWs")
 def rmhtml(text):
     return TAG_RE.sub('', text)
 def getlast(url):
-    linkoff=BeautifulSoup(requests.get(url).text, 'html.parser').find_all("a", {"class": "cept-tt thread-link linkPlain thread-title--list"})[0]['href']
+    link=requests.get("https://www.pepper.it/codici-sconto/amazon.it?thread_type_translation=codici-sconto&page=1&threadTypeId=1&show-expired=0",headers={"user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36"}).text.split("https:\/\/www.pepper.it\/offerte\/")[1].split('"')[0]
+    linkoff="https://www.pepper.it/offerte/"+link[:len(link)-1]
+    #print(link)
+    #linkoff=BeautifulSoup(requests.get(url,headers={"user-agent":"Mozilla/5.0 (compatible; MSIE 10.0; Windows Phone 8.0; Trident/6.0; IEMobile/10.0; ARM; Touch; NOKIA; Lumia 920)"}).text, 'html.parser').find_all("a", {"class": "cept-tt thread-link linkPlain thread-title--list"})[0]['href']
     return linkoff
 def grabasin(l):
     asin = re.search(r'(?:[/dp/]|$)([A-Z0-9]{10})', l, flags=re.IGNORECASE).group(1).split('?')[0]
@@ -40,7 +44,7 @@ def write(file,txt):
     f = open(file, "w+")
     f.write(txt)
     f.close()
-def append(file,txt):
+def append(file,txt): 
     write(file,read(file)+txt)
 def getlastasin(file):
     try:
@@ -49,14 +53,11 @@ def getlastasin(file):
         return(lista[l:])
     except:
         return("")
+def getlistasin():
+    return requests.get("https://chatto.altervista.org/offers/programma/file").text
 def check(l):
     asin=grabasin(l)
-    last=getlastasin(read("oldlist"))
-    if(read("oldlist")!="" and gett()!=read("oldlist")):
-        os.remove(read("oldlist"))
-        write(gett(),last)
-        write("oldlist",gett())
-    lista=read(gett())
+    lista=getlistasin()
     if(asin not in lista):
         return True
     else:
@@ -109,7 +110,7 @@ def getinfo(url):
     ts=check(l)
     a=grabasin(l)
     i=imgzer(l)
-    l="https://www.amazon.it/dp/"+grabasin(l)+"/?tag=ciao"
+    l="https://www.amazon.it/dp/"+grabasin(l)+"/?tag=prezzone97-21"
     return({"name":n,"description":shortdesc(de),"price":p,"oldprice":op,"discount":d,"coupon":c,"link":l,"image":i,"asin":a,"tosend":ts})
 def notdisturb():
     now = datetime.now().day
@@ -124,7 +125,8 @@ def getimg(url):
     f.write(requests.get(url).content)
     f.close()
 def addasin(asino):
-    append(gett(),asino)
+    payloado={"txt":asino,"pswd":"Napoli101@"}
+    requests.post("https://chatto.altervista.org/offers/programma/write.php",data=payloado)
 def send_site(info):
     payload={"name":info["name"],"desc":info["description"],"price":info["price"],"oldprice":info["oldprice"],"disc":info["discount"],"coupon":info["coupon"],"link":info["link"],"image":info["image"],"asin":info["asin"],"pswd":"Napoli101@"}
     requests.post("https://chatto.altervista.org/offers/index.php",data=payload)
@@ -147,7 +149,8 @@ def geturl(info):
     return shortn("https://affarone97.wixsite.com/prezzone/redirecting?img="+urllib.parse.quote(str(info["image"]))+"&url="+urllib.parse.quote(str(info["link"]))+"&name="+urllib.parse.quote(str(info["name"])))
 def send_offer(info):
     markup = types.InlineKeyboardMarkup()
-    itembtna = types.InlineKeyboardButton('Vai!',url=geturl(info))
+    lo=geturl(info)
+    itembtna = types.InlineKeyboardButton('Vai!',url=lo)
     markup.row(itembtna)
     getimg(info["image"])
     img = open('image.jpg', 'rb')
@@ -161,6 +164,15 @@ def send_offer(info):
 💶PREZZO:<b>"""+info["price"]+"""</b>💶:(invece di:💰<b>"""+info["oldprice"]+"""</b>💰)
 
 SCONTO:📉<b>"""+info["discount"]+"""</b>📉""", reply_markup=markup,parse_mode="html")
+        getimg(info["image"])
+        img = open('image.jpg', 'rb')
+        bot.send_photo(fid,img,caption="""💶PREZZO:<b>"""+info["price"]+"""</b>💶:(invece di:💰<b>"""+info["oldprice"]+"""</b>💰)
+
+SCONTO:📉<b>"""+info["discount"]+"""</b>📉
+
+"""+info["name"]+"""
+
+📝"""+info["description"]+"""📝""", reply_markup=markup,parse_mode="html")
     else:
         bot.send_photo(cid,img,caption="""🔥AFFARONE🔥
 """+info["name"]+"""
@@ -170,13 +182,22 @@ SCONTO:📉<b>"""+info["discount"]+"""</b>📉""", reply_markup=markup,parse_mod
 💶PREZZO:<b>"""+info["price"]+"""</b>💶:(invece di:💰<b>"""+info["oldprice"]+"""</b>💰)
 
 SCONTO:📉<b>"""+info["discount"]+"""</b>📉""", reply_markup=markup,parse_mode="html")
+        getimg(info["image"])
+        img = open('image.jpg', 'rb')
+        bot.send_photo(fid,img,caption="""💶PREZZO:<b>"""+info["price"]+"""</b>💶:(invece di:💰<b>"""+info["oldprice"]+"""</b>💰)
+
+SCONTO:📉<b>"""+info["discount"]+"""</b>📉
+
+"""+info["name"]+"""
+
+📝"""+info["description"]+"""📝""", reply_markup=markup,parse_mode="html")
     if(info["coupon"]!=None):
         bot.send_message(cid,info["coupon"])
     img.close()
     send_site(info)
     addasin(info["asin"])
 while(True):
-    linkoff=getlast("https://www.pepper.it/codici-sconto/amazon.it")
+    linkoff=getlast("https://testscrapero.herokuapp.com/https://www.pepper.it/codici-sconto/amazon.it")
     info=getinfo(linkoff)
     print(info)
     if(info["tosend"] and notdisturb()):
