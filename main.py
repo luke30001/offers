@@ -197,7 +197,7 @@ SCONTO:📉<b>"""+info["discount"]+"""</b>📉
     send_site(info)
     addasin(info["asin"])
 while(True):
-    linkoff=getlast("https://testscrapero.herokuapp.com/https://www.pepper.it/codici-sconto/amazon.it")
+    linkoff=getlast("https://www.pepper.it/codici-sconto/amazon.it")
     info=getinfo(linkoff)
     print(info)
     if(info["tosend"] and notdisturb()):
