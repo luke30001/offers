@@ -25,10 +25,11 @@ def getlast(url):
     #link=requests.get("https://www.pepper.it/codici-sconto/amazon.it?thread_type_translation=codici-sconto&page=1&threadTypeId=1&show-expired=0",headers={"user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36"}).text.split("https:\/\/www.pepper.it\/offerte\/")[1].split('"')[0]
     #linkoff="https://www.pepper.it/offerte/"+link[:len(link)-1]
     #print(link)
-    linkoff=BeautifulSoup(requests.get(url,headers={"user-agent":"Mozilla/5.0 (compatible; MSIE 10.0; Windows Phone 8.0; Trident/6.0; IEMobile/10.0; ARM; Touch; NOKIA; Lumia 920)"}).text, 'html.parser').find_all("a", {"class": "cept-tt thread-link linkPlain thread-title--list"})[0]['href']
+    #print(requests.get(url).headers)
+    linkoff=BeautifulSoup(requests.get(url).text, 'html.parser').find_all("a", {"class": "cept-tt thread-link linkPlain thread-title--list"})[0]['href']
     return linkoff
 def grabasin(l):
-    asin = re.search(r'(?:[/dp/]|$)([A-Z0-9]{10})', l, flags=re.IGNORECASE).group(1).split('?')[0]
+    asin = re.search(r'/[dg]p/([^/]+)', l, flags=re.IGNORECASE).group(1).split('?')[0]
     return asin
 def gett():
     return(datetime.today().strftime('%Y-%m-%d'))
@@ -197,7 +198,7 @@ SCONTO:📉<b>"""+info["discount"]+"""</b>📉
     send_site(info)
     addasin(info["asin"])
 while(True):
-    linkoff=getlast("https://testscrapero.herokuapp.com/https://www.pepper.it/codici-sconto/amazon.it")
+    linkoff=getlast("https://www.pepper.it/codici-sconto/amazon.it")
     info=getinfo(linkoff)
     print(info)
     if(info["tosend"] and notdisturb()):
