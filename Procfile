@@ -1,1 +1,1 @@
-Runthis: python3 main.py
+Runthis: sh main.sh
