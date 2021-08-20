@@ -83,6 +83,12 @@ def shortdesc(text):
     return dd
 def imgzer(l):
     return requests.get("https://ws-eu.amazon-adsystem.com/widgets/q?_encoding=UTF8&MarketPlace=IT&ASIN="+grabasin(l)+"&ServiceVersion=20070822&ID=AsinImage&WS=1&Format=_AC_SX466_").url
+def issetclass(v):
+    try:
+        v["class"]
+        return True
+    except:
+        return False
 def getinfo(url):
     html=BeautifulSoup(requests.get(url).text, 'html.parser')
     de=rmhtml( html.find_all("div",{"class":"cept-description-container overflow--wrap-break width--all-12 space--mt-3 overflow--hidden"})[0].decode_contents()).strip()
@@ -105,14 +111,18 @@ def getinfo(url):
         c=None
     l=html.find_all("a")
     for v in l:
-        if("cept-dealBtn" in v["class"]):
-            l=v["href"]
+        if(issetclass(v)):
+            if("cept-dealBtn" in v["class"]):
+                l=v["href"]
+    print(l)
     l=requests.get(l).url
     ts=check(l)
     a=grabasin(l)
-    i=imgzer(l)
+    #i=imgzer(l)
+    i=""
+    lu=l
     l="https://www.amazon.it/dp/"+grabasin(l)+"/?tag=prezzone97-21"
-    return({"name":n,"description":shortdesc(de),"price":p,"oldprice":op,"discount":d,"coupon":c,"link":l,"image":i,"asin":a,"tosend":ts})
+    return({"name":n,"description":shortdesc(de),"price":p,"oldprice":op,"discount":d,"coupon":c,"link":l,"image":i,"asin":a,"oldlink":lu,"tosend":ts})
 def notdisturb():
     now = datetime.now().day
     print(now)
@@ -199,8 +209,10 @@ SCONTO:📉<b>"""+info["discount"]+"""</b>📉
     addasin(info["asin"])
 while(True):
     linkoff=getlast("https://www.pepper.it/codici-sconto/amazon.it")
+    print(linkoff)
     info=getinfo(linkoff)
     print(info)
     if(info["tosend"] and notdisturb()):
+        info["image"]=imgzer(info["oldlink"])
         send_offer(info)
     time.sleep(60)
