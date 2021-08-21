@@ -212,6 +212,7 @@ while(True):
     print(linkoff)
     info=getinfo(linkoff)
     print(info)
+    print(datetime.now().hour)
     if(info["tosend"] and notdisturb()):
         info["image"]=imgzer(info["oldlink"])
         send_offer(info)
