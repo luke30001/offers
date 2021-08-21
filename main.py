@@ -16,8 +16,8 @@ password = "Napoli101@"
 maxdesc=20
 TAG_RE = re.compile(r'<[^>]+>')
 cid=-1001277502965
-end=22
-start=8
+end=25 #22
+start=7 #7
 bot=telebot.TeleBot("1066207372:AAH5nci3ekQGyN408w_5J1qIW2oWcMzoaWs")
 def rmhtml(text):
     return TAG_RE.sub('', text)
@@ -124,7 +124,7 @@ def getinfo(url):
     l="https://www.amazon.it/dp/"+grabasin(l)+"/?tag=prezzone97-21"
     return({"name":n,"description":shortdesc(de),"price":p,"oldprice":op,"discount":d,"coupon":c,"link":l,"image":i,"asin":a,"oldlink":lu,"tosend":ts})
 def notdisturb():
-    now = datetime.now().hour
+    now = int(datetime.now().hour)
     print(now)
     if(now>start and now<end):
         return True
@@ -208,12 +208,12 @@ SCONTO:📉<b>"""+info["discount"]+"""</b>📉
     send_site(info)
     addasin(info["asin"])
 while(True):
-    linkoff=getlast("https://www.pepper.it/codici-sconto/amazon.it")
-    print(linkoff)
-    info=getinfo(linkoff)
-    print(info)
-    print(datetime.now().hour)
-    if(info["tosend"] and notdisturb()):
-        info["image"]=imgzer(info["oldlink"])
-        send_offer(info)
+    if(notdisturb()):
+        linkoff=getlast("https://www.pepper.it/codici-sconto/amazon.it")
+        print(linkoff)
+        info=getinfo(linkoff)
+        print(info)
+        if(info["tosend"]):
+            info["image"]=imgzer(info["oldlink"])
+            send_offer(info)
     time.sleep(60)
