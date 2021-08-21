@@ -124,7 +124,7 @@ def getinfo(url):
     l="https://www.amazon.it/dp/"+grabasin(l)+"/?tag=prezzone97-21"
     return({"name":n,"description":shortdesc(de),"price":p,"oldprice":op,"discount":d,"coupon":c,"link":l,"image":i,"asin":a,"oldlink":lu,"tosend":ts})
 def notdisturb():
-    now = datetime.now().day
+    now = datetime.now().hour
     print(now)
     if(now>start and now<end):
         return True
