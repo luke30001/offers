@@ -55,7 +55,7 @@ def getlastasin(file):
     except:
         return("")
 def getlistasin():
-    return requests.get("https://chatto.altervista.org/offers/programma/file").text
+    return requests.get("https://prezzone97.altervista.org/programma/file").text
 def check(l):
     asin=grabasin(l)
     lista=getlistasin()
@@ -137,10 +137,10 @@ def getimg(url):
     f.close()
 def addasin(asino):
     payloado={"txt":asino,"pswd":"Napoli101@"}
-    requests.post("https://chatto.altervista.org/offers/programma/write.php",data=payloado)
+    requests.post("https://prezzone97.altervista.org/programma/write.php",data=payloado)
 def send_site(info):
     payload={"name":info["name"],"desc":info["description"],"price":info["price"],"oldprice":info["oldprice"],"disc":info["discount"],"coupon":info["coupon"],"link":info["link"],"image":info["image"],"asin":info["asin"],"pswd":"Napoli101@"}
-    requests.post("https://chatto.altervista.org/offers/index.php",data=payload)
+    requests.post("https://prezzone97.altervista.org/index.php",data=payload)
 def shortn(url):
     auth_res = requests.post("https://api-ssl.bitly.com/oauth/access_token", auth=(username, password))
     access_token = auth_res.content.decode()
@@ -159,7 +159,7 @@ def geturl(info):
         cc=info["coupon"]
     return shortn("https://affarone97.wixsite.com/prezzone/redirecting?img="+urllib.parse.quote(str(info["image"]))+"&url="+urllib.parse.quote(str(info["link"]))+"&name="+urllib.parse.quote(str(info["name"])))
 def addlast(last):
-    requests.post("https://chatto.altervista.org/offers/programma2/write.php",data={"pswd":"Napoli101@","txt":last}).text
+    requests.post("https://prezzone97.altervista.org/programma2/write.php",data={"pswd":"Napoli101@","txt":last}).text
 def send_offer(info):
     markup = types.InlineKeyboardMarkup()
     lo=geturl(info)
@@ -211,7 +211,7 @@ SCONTO:📉<b>"""+info["discount"]+"""</b>📉
     addasin(info["asin"])
     addlast(info["last"])
 def checklast(last):
-    if(last in requests.get("https://chatto.altervista.org/offers/programma2/file").text):
+    if(last in requests.get("https://prezzone97.altervista.org/programma2/file").text):
         return False
     else:
         return True
