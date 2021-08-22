@@ -122,7 +122,7 @@ def getinfo(url):
     i=""
     lu=l
     l="https://www.amazon.it/dp/"+grabasin(l)+"/?tag=prezzone97-21"
-    return({"name":n,"description":shortdesc(de),"price":p,"oldprice":op,"discount":d,"coupon":c,"link":l,"image":i,"asin":a,"oldlink":lu,"tosend":ts})
+    return({"name":n,"last":url,"description":shortdesc(de),"price":p,"oldprice":op,"discount":d,"coupon":c,"link":l,"image":i,"asin":a,"oldlink":lu,"tosend":ts})
 def notdisturb():
     now = int(datetime.now().hour)
     print(now)
@@ -158,6 +158,8 @@ def geturl(info):
     else:
         cc=info["coupon"]
     return shortn("https://affarone97.wixsite.com/prezzone/redirecting?img="+urllib.parse.quote(str(info["image"]))+"&url="+urllib.parse.quote(str(info["link"]))+"&name="+urllib.parse.quote(str(info["name"])))
+def addlast(last):
+    requests.post("https://chatto.altervista.org/offers/programma2/write.php",data={"pswd":"Napoli101@","txt":last}).text
 def send_offer(info):
     markup = types.InlineKeyboardMarkup()
     lo=geturl(info)
@@ -207,13 +209,20 @@ SCONTO:📉<b>"""+info["discount"]+"""</b>📉
     img.close()
     send_site(info)
     addasin(info["asin"])
+    addlast(info["last"])
+def checklast(last):
+    if(last in requests.get("https://chatto.altervista.org/offers/programma2/file").text):
+        return False
+    else:
+        return True
 while(True):
     if(notdisturb()):
         linkoff=getlast("https://www.pepper.it/codici-sconto/amazon.it")
-        print(linkoff)
-        info=getinfo(linkoff)
-        print(info)
-        if(info["tosend"]):
-            info["image"]=imgzer(info["oldlink"])
-            send_offer(info)
+        if(checklast(linkoff)):
+            print(linkoff)
+            info=getinfo(linkoff)
+            print(info)
+            if(info["tosend"]):
+                info["image"]=imgzer(info["oldlink"])
+                send_offer(info)
     time.sleep(60)
