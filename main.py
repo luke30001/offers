@@ -218,6 +218,7 @@ def checklast(last):
 while(True):
     if(notdisturb()):
         linkoff=getlast("https://www.pepper.it/codici-sconto/amazon.it")
+        print(linkoff)
         if(checklast(linkoff)):
             print(linkoff)
             info=getinfo(linkoff)
