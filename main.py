@@ -142,8 +142,8 @@ def send_site(info):
     payload={"name":info["name"],"desc":info["description"],"price":info["price"],"oldprice":info["oldprice"],"disc":info["discount"],"coupon":info["coupon"],"link":info["link"],"image":info["image"],"asin":info["asin"],"pswd":"Napoli101@"}
     requests.post("https://prezzone97.altervista.org/index.php",data=payload)
 def shortn(url):
-    auth_res = requests.post("https://api-ssl.bitly.com/oauth/access_token", auth=(username, password))
-    access_token = auth_res.content.decode()
+    #auth_res = requests.post("https://api-ssl.bitly.com/oauth/access_token", auth=(username, password))
+    #access_token = auth_res.content.decode()
     access_token="25d0c560bcc0131c019b949ab583adb1d58f63e3"
     print(access_token)
     headers = {"Authorization": f"Bearer {access_token}"}
