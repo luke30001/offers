@@ -18,7 +18,7 @@ TAG_RE = re.compile(r'<[^>]+>')
 cid=-1001401024374
 end=20 #22
 start=5 #7
-bot=telebot.TeleBot("1744179418:AAHxLMJMEcZJmRH0ZO-f3gviTVGWZVWeFl4")
+bot=telebot.TeleBot("1144044250:AAFk93xAVG7g3_okHFVU6w9UUlTTb6dhTag")
 def rmhtml(text):
     return TAG_RE.sub('', text)
 def getlast(url):
@@ -144,8 +144,11 @@ def send_site(info):
 def shortn(url):
     auth_res = requests.post("https://api-ssl.bitly.com/oauth/access_token", auth=(username, password))
     access_token = auth_res.content.decode()
+    access_token="25d0c560bcc0131c019b949ab583adb1d58f63e3"
+    print(access_token)
     headers = {"Authorization": f"Bearer {access_token}"}
     groups_res = requests.get("https://api-ssl.bitly.com/v4/groups", headers=headers)
+    print(groups_res.text)
     groups_data = groups_res.json()['groups'][0]
     guid = groups_data['guid']
     shorten_res = requests.post("https://api-ssl.bitly.com/v4/shorten", json={"group_guid": guid,"domain": "bit.ly", "long_url": url}, headers=headers)
