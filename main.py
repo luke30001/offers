@@ -16,7 +16,7 @@ password = "Napoli101@"
 maxdesc=20
 TAG_RE = re.compile(r'<[^>]+>')
 cid=-1001401024374
-end=22 #20
+end=20 #22
 start=5 #7
 bot=telebot.TeleBot("1144044250:AAFk93xAVG7g3_okHFVU6w9UUlTTb6dhTag")
 def rmhtml(text):
