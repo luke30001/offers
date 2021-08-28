@@ -16,7 +16,7 @@ password = "Napoli101@"
 maxdesc=20
 TAG_RE = re.compile(r'<[^>]+>')
 cid=-1001401024374
-end=20 #22
+end=20 #2
 start=5 #7
 bot=telebot.TeleBot("1144044250:AAFk93xAVG7g3_okHFVU6w9UUlTTb6dhTag")
 def rmhtml(text):
@@ -222,6 +222,14 @@ def geturl(info):
 def addlast(last):
     requests.post("https://prezzone97.altervista.org/programma2/write.php",data={"pswd":"Napoli101@","txt":last}).text
 def addlastscontify(last):
+    lasto=str(last).split('/')
+    i=0
+    last=""
+    ll=len(lasto)-2
+    while (i<ll):
+        last=last+lasto[i]+"/"
+        i=i+1
+    print(last)
     requests.post("https://prezzone97.altervista.org/programma3/write.php",data={"pswd":"Napoli101@","txt":last}).text
 def send_offer(info):
     markup = types.InlineKeyboardMarkup()
@@ -327,6 +335,13 @@ def checklast(last):
     else:
         return True
 def checklastscontify(last):
+    lasto=str(last).split('/')
+    i=0
+    last=""
+    ll=len(lasto)-2
+    while (i<ll):
+        last=lasto[i]+"/"
+        i=i+1
     if(last in requests.get("https://prezzone97.altervista.org/programma3/file").text):
         return False
     else:
