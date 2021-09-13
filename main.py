@@ -91,9 +91,6 @@ def shortdesc(text):
             if(tt):
                 tt=False
                 dd=dd+"..."
-    cleanr = re.compile('<.*?>')
-    dd = re.sub(cleanr, '', dd)
-    dd=dd.split('</span>')[len(dd.split('</span>'))-1]
     return dd
 def imgzer(l):
     return requests.get("https://ws-eu.amazon-adsystem.com/widgets/q?_encoding=UTF8&MarketPlace=IT&ASIN="+grabasin(l)+"&ServiceVersion=20070822&ID=AsinImage&WS=1&Format=_AC_SX466_").url
@@ -103,6 +100,10 @@ def issetclass(v):
         return True
     except:
         return False
+def removehtml(txt):
+    cleanr = re.compile('<.*?>')
+    dd = re.sub(cleanr, '', txt)
+    return dd
 def getinfo(url):
     html=BeautifulSoup(requests.get(url).text, 'html.parser')
     de=rmhtml( html.find_all("div",{"class":"cept-description-container overflow--wrap-break width--all-12 space--mt-3 overflow--hidden"})[0].decode_contents()).strip()
@@ -144,7 +145,7 @@ def getinfo(url):
         d=round(d)
         d=str(d)+"%"
     l="https://www.amazon.it/dp/"+grabasin(l)+"/?tag=prezzone97-21"
-    return({"name":n,"last":url,"description":shortdesc(de),"price":p,"oldprice":op,"discount":d,"coupon":c,"link":l,"image":i,"asin":a,"oldlink":lu,"tosend":ts})
+    return({"name":removehtml(n),"last":url,"description":shortdesc(de),"price":p,"oldprice":op,"discount":d,"coupon":c,"link":l,"image":i,"asin":a,"oldlink":lu,"tosend":ts})
 def getinfoscontify(url):
     html=BeautifulSoup(requests.get(url).text, 'html.parser')
     de=""
@@ -183,7 +184,7 @@ def getinfoscontify(url):
         d=round(d)
         d=str(d)+"%"
     l="https://www.amazon.it/dp/"+grabasin(l)+"/?tag=prezzone97-21"
-    return({"name":n,"last":url,"description":shortdesc(de),"price":p,"oldprice":op,"discount":d,"coupon":c,"link":l,"image":i,"asin":a,"oldlink":lu,"tosend":ts})
+    return({"name":removehtml(n),"last":url,"description":shortdesc(de),"price":p,"oldprice":op,"discount":d,"coupon":c,"link":l,"image":i,"asin":a,"oldlink":lu,"tosend":ts})
 def notdisturb():
     now = int(datetime.now().hour)
     print(now)
