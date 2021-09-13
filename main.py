@@ -200,18 +200,21 @@ def send_site(info):
     payload={"name":info["name"],"desc":info["description"],"price":info["price"],"oldprice":info["oldprice"],"disc":info["discount"],"coupon":info["coupon"],"link":info["link"],"image":info["image"],"asin":info["asin"],"pswd":"Napoli101@"}
     requests.post("https://prezzone97.altervista.org/index.php",data=payload)
 def shortn(url):
+    res=requests.get("https://cutt.ly/api/api.php?key=fe5b87b676a92fed1db91932c6e2fb076e3ae&short="+urllib.parse.quote(url))
+    print(res.json().get("url").get("shortLink"))
+    return(res.json().get("url").get("shortLink"))
     #auth_res = requests.post("https://api-ssl.bitly.com/oauth/access_token", auth=(username, password))
     #access_token = auth_res.content.decode()
-    access_token="25d0c560bcc0131c019b949ab583adb1d58f63e3"
-    print(access_token)
-    headers = {"Authorization": f"Bearer {access_token}"}
-    groups_res = requests.get("https://api-ssl.bitly.com/v4/groups", headers=headers)
-    print(groups_res.text)
-    groups_data = groups_res.json()['groups'][0]
-    guid = groups_data['guid']
-    shorten_res = requests.post("https://api-ssl.bitly.com/v4/shorten", json={"group_guid": guid,"domain": "bit.ly", "long_url": url}, headers=headers)
-    link = shorten_res.json().get("link")
-    return(link)
+    #access_token="25d0c560bcc0131c019b949ab583adb1d58f63e3"
+    #print(access_token)
+    #headers = {"Authorization": f"Bearer {access_token}"}
+    #groups_res = requests.get("https://api-ssl.bitly.com/v4/groups", headers=headers)
+    #print(groups_res.text)
+    #groups_data = groups_res.json()['groups'][0]
+    #guid = groups_data['guid']
+    #shorten_res = requests.post("https://api-ssl.bitly.com/v4/shorten", json={"group_guid": guid,"domain": "bit.ly", "long_url": url}, headers=headers)
+    #link = shorten_res.json().get("link")
+    #return(link)
 def geturl(info):
     cc=""
     if(info["coupon"]==None):
