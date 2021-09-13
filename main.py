@@ -93,6 +93,7 @@ def shortdesc(text):
                 dd=dd+"..."
     cleanr = re.compile('<.*?>')
     dd = re.sub(cleanr, '', dd)
+    dd=dd.replace('<span class="tipo_offerta">',"").replace('</span>',"")
     return dd
 def imgzer(l):
     return requests.get("https://ws-eu.amazon-adsystem.com/widgets/q?_encoding=UTF8&MarketPlace=IT&ASIN="+grabasin(l)+"&ServiceVersion=20070822&ID=AsinImage&WS=1&Format=_AC_SX466_").url
