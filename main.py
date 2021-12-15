@@ -144,7 +144,7 @@ def getinfo(url):
         d=100-d
         d=round(d)
         d=str(d)+"%"
-    l="https://www.amazon.it/dp/"+grabasin(l)+"/?tag=prezzone97-21"
+    l="https://www.amazon.it/dp/"+grabasin(l)+"/?tag=prezz1-21"
     return({"name":removehtml(n),"last":url,"description":shortdesc(de),"price":p,"oldprice":op,"discount":d,"coupon":c,"link":l,"image":i,"asin":a,"oldlink":lu,"tosend":ts})
 def getinfoscontify(url):
     html=BeautifulSoup(requests.get(url).text, 'html.parser')
@@ -183,7 +183,7 @@ def getinfoscontify(url):
         d=100-d
         d=round(d)
         d=str(d)+"%"
-    l="https://www.amazon.it/dp/"+grabasin(l)+"/?tag=prezzone97-21"
+    l="https://www.amazon.it/dp/"+grabasin(l)+"/?tag=prezz1-21"
     return({"name":removehtml(n),"last":url,"description":shortdesc(de),"price":p,"oldprice":op,"discount":d,"coupon":c,"link":l,"image":i,"asin":a,"oldlink":lu,"tosend":ts})
 def notdisturb():
     now = int(datetime.now().hour)
@@ -220,12 +220,7 @@ def shortn(url):
     #link = shorten_res.json().get("link")
     #return(link)
 def geturl(info):
-    cc=""
-    if(info["coupon"]==None):
-        cc=""
-    else:
-        cc=info["coupon"]
-    return shortn("https://affarone97.wixsite.com/prezzone/redirecting?img="+urllib.parse.quote(str(info["image"]))+"&url="+urllib.parse.quote(str(info["link"]))+"&name="+urllib.parse.quote(str(info["name"])))
+    return shortn(info["link"])
 def addlast(last):
     requests.post("https://prezzone97.altervista.org/programma2/write.php",data={"pswd":"Napoli101@","txt":last}).text
 def addlastscontify(last):
